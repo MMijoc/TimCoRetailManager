@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using TRMDesktopUI.Helpers;
 using TRMDesktopUI.ViewModels;
 
 namespace TRMDesktopUI
@@ -15,7 +17,13 @@ namespace TRMDesktopUI
 		public Bootstrapper()
 		{
 			Initialize();
+
+			ConventionManager.AddElementConvention<PasswordBox>(
+				PasswordBoxHelper.BoundPasswordProperty,
+				"Password",
+				"PasswordChanged");
 		}
+
 
 		protected override void Configure()
 		{
@@ -29,8 +37,12 @@ namespace TRMDesktopUI
 			// the same (already existing) instance of WindowManager
 			_container
 				.Singleton<IWindowManager, WindowManager>()
-				.Singleton<IEventAggregator, EventAggregator>();
+				.Singleton<IEventAggregator, EventAggregator>()
+				.Singleton<IAPIHelper, APIHelper>();
 
+
+			// This means that for every assembly that is a Class and it's name ends with ViewModel put them in a list
+			// And then for each element from that list register it per request (give new instance when requested) 
 			GetType().Assembly.GetTypes()
 				.Where(t => t.IsClass)
 				.Where(t => t.Name.EndsWith("ViewModel"))
