@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMDataManager.Library
+namespace TRMDataManager.Library.Internal.DataAccess
 {
 	internal class SqlDataAccess
 	{
@@ -16,7 +16,7 @@ namespace TRMDataManager.Library
 		{
 			return ConfigurationManager.ConnectionStrings[name].ConnectionString;
 		}
-	
+
 		public List<T> LoadData<T, U>(string storedProcedure, U paramaters, string connectionStringName)
 		{
 			string connectionString = GetConnectionString(connectionStringName);
