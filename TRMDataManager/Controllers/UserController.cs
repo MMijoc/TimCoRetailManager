@@ -12,11 +12,6 @@ namespace TRMDataManager.Controllers
 	[Authorize]
 	public class UserController : ApiController
 	{
-		public string Get(int id)
-		{
-			return "value";
-		}
-
 		[HttpGet]
 		public UserModel GetById()
 		{
