@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TRMDesktopUI.Library.Api;
+using TRMDesktopUI.Library.Helpers;
 using TRMDesktopUI.Library.Models;
 using TRMDesktopUI.ViewModels;
 
@@ -41,6 +42,7 @@ namespace TRMDesktopUI
 				.Singleton<IWindowManager, WindowManager>()
 				.Singleton<IEventAggregator, EventAggregator>()
 				.Singleton<ILoggedInUserModel, LoggedInUserModel>()
+				.Singleton<IConfigHelper, ConfigHelper>()
 				.Singleton<IAPIHelper, APIHelper>();
 
 

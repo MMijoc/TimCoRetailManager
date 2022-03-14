@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Internal.Models;
+using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Controllers
 {
