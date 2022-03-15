@@ -32,7 +32,8 @@ namespace TRMDesktopUI
 			// Whenever we ask for container instance this instance will be returned
 			// Object kinda holds the instance of itself
 			_container.Instance(_container)
-				.PerRequest<IProductEndpoint, ProductEndpoint>();
+				.PerRequest<IProductEndpoint, ProductEndpoint>()
+				.PerRequest<ISaleEndpoint, SaleEndpoint>();
 
 			// Singleton is instance of an object who's lifetime is same as the lifetime of application
 			// Note on D.I.: If someone asks for the instance of a IWindowManager he will receive an instance of WindowMahager
