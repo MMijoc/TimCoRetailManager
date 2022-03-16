@@ -29,24 +29,8 @@ namespace TRMDesktopUI.ViewModels
 			_mapper = mapper;
 		}
 
+		
 		private BindingList<ProductDisplayModel> _products;
-		private int _itemQuantity = 1;
-		private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
-		private ProductDisplayModel _selectedProduct;
-
-		public ProductDisplayModel SelectedProduct
-		{
-			get { return _selectedProduct; }
-			set 
-			{ 
-				_selectedProduct = value;
-				NotifyOfPropertyChange(() => SelectedProduct);
-				NotifyOfPropertyChange(() => CanAddToCart);
-			
-			}
-		}
-
-
 		public BindingList<ProductDisplayModel> Products
 		{
 			get { return _products; }
@@ -56,16 +40,8 @@ namespace TRMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => Products);
 			}
 		}
-		public int ItemQuantity
-		{
-			get { return _itemQuantity; }
-			set
-			{
-				_itemQuantity = value;
-				NotifyOfPropertyChange(() => ItemQuantity);
-				NotifyOfPropertyChange(() => CanAddToCart);
-			}
-		}
+
+		private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 		public BindingList<CartItemDisplayModel> Cart
 		{
 			get { return _cart; }
@@ -76,38 +52,52 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
+		private int _itemQuantity = 1;
+		public int ItemQuantity
+		{
+			get { return _itemQuantity; }
+			set
+			{
+				_itemQuantity = value;
+				NotifyOfPropertyChange(() => ItemQuantity);
+				NotifyOfPropertyChange(() => CanAddToCart);
+			}
+		}
+
+
+		private ProductDisplayModel _selectedProduct;
+		public ProductDisplayModel SelectedProduct
+		{
+			get { return _selectedProduct; }
+			set
+			{
+				_selectedProduct = value;
+				NotifyOfPropertyChange(() => SelectedProduct);
+				NotifyOfPropertyChange(() => CanAddToCart);
+			}
+		}
+
+		private CartItemDisplayModel _selectedCartItem;
+		public CartItemDisplayModel SelectedCartItem
+		{
+			get { return _selectedCartItem; }
+			set
+			{
+				_selectedCartItem = value;
+				NotifyOfPropertyChange(() => SelectedCartItem);
+				NotifyOfPropertyChange(() => CanRemoveFromCart);
+			}
+		}
+
+
 		public string SubTotal
 		{
 			get { return CalculateSubTotal().ToString("C");	}
-		}
-
-		private decimal CalculateSubTotal()
-		{
-			decimal subTotal = 0;
-			foreach (var item in Cart)
-			{
-				subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-			}
-
-			return subTotal;
 		}
 		public string Tax
 		{
 			get { return CalculateTax().ToString("C"); }
 		}
-
-		private decimal CalculateTax()
-		{
-			decimal taxAmount = 0;
-			decimal taxRate = _configHelper.GetTaxRate()/100;
-
-			taxAmount = Cart
-				.Where(x => x.Product.IsTaxable)
-				.Sum( x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
-
-			return taxAmount;
-		}
-
 		public string Total
 		{
 			get
@@ -137,13 +127,14 @@ namespace TRMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				// Make sure something is selected
-
+				if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+				{
+					output = true;
+				}
 
 				return output;
 			}
 		}
-
 		public bool CanCheckOut
 		{
 			get
@@ -159,12 +150,12 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
+
 		protected override async void OnViewLoaded(object view)
 		{
 			base.OnViewLoaded(view);
 			await LoadProducts();
 		}
-
 		private async Task LoadProducts()
 		{
 			var productList = await _productEndpoint.GetAll();
@@ -197,9 +188,20 @@ namespace TRMDesktopUI.ViewModels
 			NotifyOfPropertyChange(() => Total);
 			NotifyOfPropertyChange(() => CanCheckOut);
 		}
-
 		public void RemoveFromCart()
 		{
+			SelectedCartItem.Product.QuantityInStock += 1;
+			if (SelectedCartItem.QuantityInCart > 1)
+			{
+				SelectedCartItem.QuantityInCart -= 1;
+			}
+			else
+			{
+				Cart.Remove(SelectedCartItem);
+			}
+
+
+
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
@@ -220,6 +222,29 @@ namespace TRMDesktopUI.ViewModels
 			}
 
 			await _saleEndpoint.PostSale(sale);
+		}
+
+
+		private decimal CalculateSubTotal()
+		{
+			decimal subTotal = 0;
+			foreach (var item in Cart)
+			{
+				subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+			}
+
+			return subTotal;
+		}
+		private decimal CalculateTax()
+		{
+			decimal taxAmount = 0;
+			decimal taxRate = _configHelper.GetTaxRate() / 100;
+
+			taxAmount = Cart
+				.Where(x => x.Product.IsTaxable)
+				.Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
+			return taxAmount;
 		}
 
 	}
