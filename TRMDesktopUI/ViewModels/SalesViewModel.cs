@@ -15,8 +15,8 @@ namespace TRMDesktopUI.ViewModels
 {
 	public class SalesViewModel : Screen
 	{
-		private IProductEndpoint _productEndpoint;
-		private IConfigHelper _configHelper;
+		private readonly IProductEndpoint _productEndpoint;
+		private readonly IConfigHelper _configHelper;
 		private readonly ISaleEndpoint _saleEndpoint;
 		private readonly IMapper _mapper;
 
@@ -127,7 +127,7 @@ namespace TRMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+				if (SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0)
 				{
 					output = true;
 				}
@@ -200,12 +200,11 @@ namespace TRMDesktopUI.ViewModels
 				Cart.Remove(SelectedCartItem);
 			}
 
-
-
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
 			NotifyOfPropertyChange(() => CanCheckOut);
+			NotifyOfPropertyChange(() => CanAddToCart);
 		}
 
 		public async Task CheckOut()
@@ -222,8 +221,22 @@ namespace TRMDesktopUI.ViewModels
 			}
 
 			await _saleEndpoint.PostSale(sale);
+
+			await ResetSalesViewModel();
 		}
 
+
+		private async Task ResetSalesViewModel()
+		{
+			Cart = new BindingList<CartItemDisplayModel>();
+			// TODO - add clearing the selectedcaritem if it does not do it by itself
+
+			await LoadProducts();
+			NotifyOfPropertyChange(() => SubTotal);
+			NotifyOfPropertyChange(() => Tax);
+			NotifyOfPropertyChange(() => Total);
+			NotifyOfPropertyChange(() => CanCheckOut);
+		}
 
 		private decimal CalculateSubTotal()
 		{
