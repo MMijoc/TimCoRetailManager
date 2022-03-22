@@ -54,6 +54,11 @@ namespace TRMDesktopUI.ViewModels
 			return task;
 		}
 
+		public void UserManagement()
+		{
+			ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
+		}
+
 		public void LogOut()
 		{
 			_user.ResetUserModel();
