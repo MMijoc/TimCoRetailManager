@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 using TRMDataManager.Library.DataAccess;
 using TRMDataManager.Library.Models;
 
-namespace TRMDataManager.Controllers
+namespace TRMApi.Controllers
 {
+	[Route("api/[controller]")]
+	[ApiController]
 	[Authorize]
-	public class InventoryController : ApiController
+	public class InventoryController : ControllerBase
 	{
 		[Authorize(Roles = "Manager,Admin")]
 		public List<InventoryModel> Get()
@@ -21,7 +21,7 @@ namespace TRMDataManager.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		public void Post( InventoryModel item)
+		public void Post(InventoryModel item)
 		{
 			InventoryData data = new InventoryData();
 
