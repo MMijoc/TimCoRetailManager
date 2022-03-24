@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,15 @@ namespace TRMDataManager.Library.DataAccess
 {
 	public class UserData
 	{
+		private readonly IConfiguration _config;
+
+		public UserData(IConfiguration config)
+		{
+			_config = config;
+		}
 		public List<UserModel> GetUserById(string id)
 		{
-			SqlDataAccess sql = new SqlDataAccess();
+			SqlDataAccess sql = new SqlDataAccess(_config);
 
 			var p = new { Id = id };
 
