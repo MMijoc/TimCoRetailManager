@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-	internal class SqlDataAccess : IDisposable
+	public class SqlDataAccess : IDisposable, ISqlDataAccess
 	{
 		private IDbConnection _connection;
 		private IDbTransaction _transaction;
-		private bool isClosed = false;
+		private bool _isClosed = false;
 		private readonly IConfiguration _config;
 
 		public SqlDataAccess(IConfiguration config)
@@ -39,7 +39,6 @@ namespace TRMDataManager.Library.Internal.DataAccess
 				return rows;
 			}
 		}
-
 		public void SaveData<T>(string storedProcedure, T paramaters, string connectionStringName)
 		{
 			string connectionString = GetConnectionString(connectionStringName);
@@ -50,9 +49,6 @@ namespace TRMDataManager.Library.Internal.DataAccess
 			}
 		}
 
-
-
-
 		public void StartTransaction(string connectionStringName)
 		{
 			string connectionString = GetConnectionString(connectionStringName);
@@ -61,9 +57,8 @@ namespace TRMDataManager.Library.Internal.DataAccess
 			_connection.Open();
 
 			_transaction = _connection.BeginTransaction();
-			isClosed = false;
+			_isClosed = false;
 		}
-
 		public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U paramaters)
 		{
 			List<T> rows = _connection.Query<T>(storedProcedure, paramaters,
@@ -73,33 +68,29 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
 			return rows;
 		}
-
 		public void SaveDataInTransaction<T>(string storedProcedure, T paramaters)
 		{
 			_connection.Execute(storedProcedure, paramaters,
 				commandType: CommandType.StoredProcedure,
 				transaction: _transaction);
 		}
-
 		public void CommitTransaction()
 		{
 			_transaction?.Commit();
-			_connection.Close();
+			_connection?.Close();
 
-			isClosed = true;
+			_isClosed = true;
 		}
-
 		public void RollbackTransaction()
 		{
 			_transaction?.Rollback();
 			_connection.Close();
 
-			isClosed = true;
+			_isClosed = true;
 		}
-
 		public void Dispose()
 		{
-			if (isClosed == false)
+			if (_isClosed == false)
 			{
 				try
 				{
