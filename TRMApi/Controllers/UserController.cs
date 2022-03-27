@@ -29,7 +29,7 @@ namespace TRMApi.Controllers
 		public UserController(ApplicationDbContext context,
 						UserManager<IdentityUser> userManager,
 						IUserData userData,
-						ILogger logger)
+						ILogger<UserController> logger)
 		{
 			_context = context;
 			_userManager = userManager;
