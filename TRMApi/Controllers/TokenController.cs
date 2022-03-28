@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TRMApi.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMApi.Controllers
 {
@@ -16,13 +17,18 @@ namespace TRMApi.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly IConfiguration _config;
 
 		public object Encodign { get; private set; }
 
-		public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+		public TokenController(
+			ApplicationDbContext context,
+			UserManager<IdentityUser> userManager,
+			IConfiguration config)
 		{
 			_context = context;
 			_userManager = userManager;
+			_config = config;
 		}
 
 		[Route("/token")]
@@ -66,10 +72,12 @@ namespace TRMApi.Controllers
 				claims.Add(new Claim(ClaimTypes.Role as string, role.Name as string));
 			}
 
+			var key = _config.GetValue<string>("Secrets:SecurityKey");
+
 			var token = new JwtSecurityToken(
 				new JwtHeader(
 					new SigningCredentials(
-						new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySeacretKeyIsSeacretSoDoNotTell")), SecurityAlgorithms.HmacSha256)),
+						new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256)),
 					new JwtPayload(claims));
 
 			var output = new
