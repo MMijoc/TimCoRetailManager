@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,6 @@ namespace TRMDesktopUI.ViewModels
 		private string _password = "Tt.123";
 		private IAPIHelper _apiHelper;
 		private IEventAggregator _events;
-
 		private string _errorMessage;
 
 		public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)
