@@ -20,9 +20,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMApi", "TRMApi\TRMApi.csproj", "{E19BD593-B0AA-4FD9-9AC7-F9BF31376C6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03C658B0-9DE1-493B-A43A-73E011822265}"
-	ProjectSection(SolutionItems) = preProject
-		Roadmap.txt = Roadmap.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
