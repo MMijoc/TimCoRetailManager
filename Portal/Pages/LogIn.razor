@@ -1,0 +1,64 @@
+﻿@page "/login"
+
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
+
+
+<h3>Log In</h3>
+@if (showAuthenticationError)
+{
+	<div class="alert alert-danger" role="alert">
+		<p>@authenticationErrorText</p>
+	</div>
+}
+
+<EditForm Model="model" OnValidSubmit="ExecuteLogin" class="card card-body" bg-light mt-5>
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group row">
+		<label for="email" class="col-md-2 col-form-label">Email: </label>
+		<div class="col-md-10">
+			<InputText id="email" class="form-control" @bind-Value="model.Email" />
+			<ValidationMessage For="@(() => model.Email)" />
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="password" class="col-md-2 col-form-label">Email: </label>
+		<div class="col-md-10">
+			<InputText type="password" id="password" class="form-control" @bind-Value="model.Password" />
+			<ValidationMessage For="@(() => model.Password)" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 text-right">
+			<button type="submit" class="btn btn-success">Log In</button>
+		</div>
+	</div>
+
+</EditForm>
+
+@code {
+	private AuthenticationUserModel model = new();
+
+	private bool showAuthenticationError = false;
+	private string authenticationErrorText = "";
+
+	private async Task ExecuteLogin()
+	{
+		showAuthenticationError = false;
+
+		var result = await AuthService.Login(model);
+
+		if (result is not null)
+		{
+			NavManager.NavigateTo("/");
+		}
+		else
+		{
+			authenticationErrorText = "There was an error when trying to log in";
+			showAuthenticationError = true;
+		}
+	}
+}

@@ -28,6 +28,7 @@ namespace Portal.Authentication
 		public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel userForAuthentification)
 		{
 			var data = new FormUrlEncodedContent(new[]
+			{
 				new KeyValuePair<string, string>("grant_type", "password"),
 				new KeyValuePair<string, string>("username", userForAuthentification.Email),
 				new KeyValuePair<string, string>("password", userForAuthentification.Password),
@@ -57,8 +58,8 @@ namespace Portal.Authentication
 		public async Task Logout()
 		{
 			await _localStorage.RemoveItemAsync("authToken");
-
 			((AuthStateProvider)_authStateProvider).NotifyUserLogout();
+			_client.DefaultRequestHeaders.Authorization = null;
 		}
 	}
 }
