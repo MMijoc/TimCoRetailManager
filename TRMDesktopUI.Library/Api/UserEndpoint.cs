@@ -49,6 +49,24 @@ namespace TRMDesktopUI.Library.Api
 			}
 		}
 
+		public async Task CreateUser(CreateUserModel model)
+		{
+			var data = new {
+				model.FirstName,
+				model.LastName,
+				model.EmailAddress,
+				model.Password
+			};
+
+			using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("/api/User/Register", data))
+			{
+				if (response.IsSuccessStatusCode == false)
+				{
+					throw new Exception(response.ReasonPhrase);
+				}
+			}
+		}
+
 		public async Task AddUserToRole(string userId, string roleName)
 		{
 			var data = new {userId, roleName};
