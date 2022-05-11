@@ -43,7 +43,7 @@ namespace TRMDesktopUI.ViewModels
 				SelectedUserName = value.Email;
 				UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
 				// TODO - This is a very bad solution, this need to be extracted to a method and be awaited
-				LoadRoles().Wait();
+				LoadRoles();//.Wait();
 				NotifyOfPropertyChange(() => SelectedUser);
 			}
 		}
@@ -162,7 +162,7 @@ namespace TRMDesktopUI.ViewModels
 			Users = new BindingList<UserModel>(userList);
 		}
 
-		private async Task LoadRoles()
+		private async void LoadRoles()
 		{
 			var roles = await _userEndpoint.GetAllRoles();
 
