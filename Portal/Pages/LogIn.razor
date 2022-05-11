@@ -22,7 +22,18 @@
 			<button type="button" class="btn btn-primary" @onclick="RegisterUser">Register</button>
 		</div>
 	</div>
+
+	@if (showAuthenticationError)
+	{
+		<div class="form-row">
+			<div class="tex-danger">
+				@authenticationErrorText
+			</div>
+		</div>
+	}
 </EditForm>
+
+
 
 @code {
 	private AuthenticationUserModel model = new();

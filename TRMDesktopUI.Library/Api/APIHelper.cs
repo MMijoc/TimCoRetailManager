@@ -11,7 +11,7 @@ namespace TRMDesktopUI.Library.Api
 	public class APIHelper : IAPIHelper
 	{
 		private HttpClient _apiClient;
-		private ILoggedInUserModel _loggedInUser;
+		private readonly ILoggedInUserModel _loggedInUser;
 		private readonly IConfiguration _config;
 
 		public APIHelper(ILoggedInUserModel loggedInUser, IConfiguration config)
@@ -61,7 +61,6 @@ namespace TRMDesktopUI.Library.Api
 				{
 					throw new Exception(response.ReasonPhrase);
 				}
-
 			}
 		}
 

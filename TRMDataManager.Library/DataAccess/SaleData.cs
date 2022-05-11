@@ -39,7 +39,7 @@ namespace TRMDataManager.Library.DataAccess
 		{
 			// TODO: Make this SOLID/DRY/Better
 			// Start filling in the sale detail models we will save to the database
-			List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
+			List<SaleDetailDBModel> details = new();
 			decimal taxRate = GetTaxRate();
 
 
@@ -69,7 +69,7 @@ namespace TRMDataManager.Library.DataAccess
 			}
 
 			// Create the Sale model
-			SaleDBModel sale = new SaleDBModel
+			SaleDBModel sale = new()
 			{
 				SubTotal = details.Sum(x => x.PurchasePrice),
 				Tax = details.Sum(x => x.Tax),
@@ -87,7 +87,7 @@ namespace TRMDataManager.Library.DataAccess
 
 
 				// Get the ID from the sale mode
-				sale.Id = _sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { CashierId = sale.CashierId, SaleDate = sale.SaleDate }).FirstOrDefault();
+				sale.Id = _sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
 
 				// Finish filling in the sale detail models
 				foreach (var item in details)
@@ -99,7 +99,7 @@ namespace TRMDataManager.Library.DataAccess
 
 				_sql.CommitTransaction();
 			}
-			catch (Exception ex)
+			catch
 			{
 				_sql.RollbackTransaction();
 				throw;

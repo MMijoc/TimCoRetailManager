@@ -1,10 +1,8 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using TRMDesktopUI.Library.Api;
@@ -44,7 +42,8 @@ namespace TRMDesktopUI.ViewModels
 				_selectedUser = value;
 				SelectedUserName = value.Email;
 				UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
-				LoadRoles();
+				// TODO - This is a very bad solution, this need to be extracted to a method and be awaited
+				LoadRoles().Wait();
 				NotifyOfPropertyChange(() => SelectedUser);
 			}
 		}
@@ -93,7 +92,7 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
-		private BindingList<string> _userRoles = new BindingList<string>();
+		private BindingList<string> _userRoles = new();
 		public BindingList<string> UserRoles
 		{
 			get
@@ -107,7 +106,7 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
-		private BindingList<string> _availableRoles = new BindingList<string>();
+		private BindingList<string> _availableRoles = new();
 		public BindingList<string> AvailableRoles
 		{
 			get

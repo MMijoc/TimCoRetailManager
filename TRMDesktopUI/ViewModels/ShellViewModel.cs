@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using TRMDesktopUI.EventModels;
@@ -40,7 +36,6 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
-
 		public ShellViewModel(IEventAggregator events,
 							  ILoggedInUserModel user,
 							  IAPIHelper apiHelper)
@@ -64,7 +59,6 @@ namespace TRMDesktopUI.ViewModels
 		{
 			await ActivateItemAsync(IoC.Get<UserDisplayViewModel>(), new CancellationToken());
 		}
-
 		public async Task LogIn()
 		{
 			await ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());

@@ -47,7 +47,7 @@ namespace TRMDesktopUI.ViewModels
 			}
 		}
 
-		private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
+		private BindingList<CartItemDisplayModel> _cart = new();
 		public BindingList<CartItemDisplayModel> Cart
 		{
 			get { return _cart; }
@@ -202,7 +202,7 @@ namespace TRMDesktopUI.ViewModels
 			}
 			else
 			{
-				CartItemDisplayModel item = new CartItemDisplayModel
+				CartItemDisplayModel item = new()
 				{
 					Product = SelectedProduct,
 					QuantityInCart = ItemQuantity,
@@ -238,7 +238,7 @@ namespace TRMDesktopUI.ViewModels
 
 		public async Task CheckOut()
 		{
-			SaleModel sale = new SaleModel();
+			SaleModel sale = new();
 
 			foreach (var item in Cart)
 			{

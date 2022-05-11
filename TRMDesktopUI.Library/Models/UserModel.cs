@@ -16,7 +16,5 @@ namespace TRMDesktopUI.Library.Models
 				return string.Join(", ", Roles.Select(x => x.Value));
 			}
 		}
-
-
 	}
 }
