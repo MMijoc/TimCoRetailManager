@@ -1,6 +1,7 @@
 ﻿@page "/products"
 @inject IProductEndpoint ProductEndpoint
 @inject IConfiguration config
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @attribute [Authorize(Roles = "Cashier")]
 
 <h3>Products</h3>
@@ -56,10 +57,34 @@
 @code {
 	private List<ProductModel> products;
 	private string api;
+	private const string ProductListName = "productList";
+	private const string ProductCacheDateName = "productChacheDate";
 
 	protected override async Task OnInitializedAsync()
 	{
 		api = config.GetValue<string>("api");
-		products = await ProductEndpoint.GetAll();
+
+		products = await localStorage.GetItemAsync<List<ProductModel>>(ProductListName);
+		DateTime? cacheDate = await localStorage.GetItemAsync<DateTime?>(ProductCacheDateName);
+		double totalMinutes = 0;
+
+		if (cacheDate is not null)
+		{
+			totalMinutes = DateTime.UtcNow.Subtract((DateTime)cacheDate).TotalMinutes;
+		}
+
+		try
+		{
+			if (products is null || cacheDate is null || totalMinutes > 10)
+			{
+				products = await ProductEndpoint.GetAll();
+				await localStorage.SetItemAsync(ProductListName, products);
+				await localStorage.SetItemAsync(ProductCacheDateName, DateTime.UtcNow);
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex);
+		}
 	}
 }
