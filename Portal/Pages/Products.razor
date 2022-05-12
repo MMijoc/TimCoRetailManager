@@ -1,40 +1,55 @@
 ﻿@page "/products"
+@inject IProductEndpoint ProductEndpoint
+@attribute [Authorize(Roles = "Cashier")]
 
 <h3>Products</h3>
 
 <div class="container-fluid">
-	<div class="row">
-		@for (int i = 0; i < 7; i++)
-		{
-			<div class="col-xl-4 col-lg-6 mb-3">
-				<div class="container">
-					<div class="row">
-						<div class="col-12">
-							<a href="">
-								<img src="https://dummyimage.com/1200x900/000/fff" class="img-fluid" alt="Placeholder image"/>
-							</a>
-							<p>
-								A placeholder example of a how this might look on a full page.
-							</p>
-							<p class="mb-1">
-								<strong>Quantity:</strong> 0
-							</p>
+	@if (products is null)
+	{
+		<div class="row">
+			<p>No products have been loaded.</p>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			@foreach (var product in products)
+			{
+				<div class="col-xl-4 col-lg-6 mb-3">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<a href="">
+									<img src="https://dummyimage.com/1200x900/000/fff" class="img-fluid" alt="Placeholder image" />
+								</a>
+								<p>
+									@product.Description
+								</p>
+								<p class="mb-1">
+									<strong>Quantity:</strong> @product.QuantityInStock
+								</p>
+							</div>
 						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-12">
-							<p class="h4 mb-3">
-								Sample Item -$0.00
-							</p>
+						<div class="row">
+							<div class="col-12">
+								<p class="h5 mb-3">
+									@product.ProductName - $@product.RetailPrice
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
->			</div>
-		}
-	</div>
+			}
+		</div>
+	}
 </div>
 
 @code {
+	private List<ProductModel> products;
 
+	protected override async Task OnInitializedAsync()
+	{
+		products = await ProductEndpoint.GetAll();
+	}
 }
