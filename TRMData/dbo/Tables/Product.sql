@@ -7,6 +7,6 @@
 	[QuantityInStock] INT NOT NULL DEFAULT 1,
 	[CreateDate] DATETIME2 NOT NULL DEFAULT getutcdate(),
 	[LastModified] DATETIME2 NOT NULL DEFAULT getutcdate(), 
-    [IsTaxable] BIT NOT NULL DEFAULT 1, 
-
+	[IsTaxable] BIT NOT NULL DEFAULT 1, 
+	[ProductImage] NVARCHAR(500) NULL, 
 )
